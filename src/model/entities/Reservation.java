@@ -39,9 +39,18 @@ public class Reservation { // Define a classe Reservation
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS); // Converte a diferença de milissegundos para dias e retorna o valor
     }
 
-    public void updateDates(Date checkin, Date checkout) { // Método para atualizar as datas de check-in e check-out da reserva
+    public String updateDates(Date checkin, Date checkout) {
+
+        Date now = new Date();
+        if (checkin.before(now) || checkout.before(now)) {
+            System.out.println("Erro na reserva: As datas de reserva para atualização devem ser datas futuras");
+        }
+        if (!checkout.after(checkin)) {
+            System.out.println("Erro na reserva: A data de check-out deve ser posterior à data de check-in");
+        }
         this.checkin = checkin; // Define o valor da variável de instância checkin com o novo valor passado como argumento
-        this.checkout = checkout; // Define o valor da variável de instância checkout com o novo valor passado como argumento
+        this.checkout = checkout;
+        return null;
     }
 
     @Override // Indica que o método toString() está sendo sobrescrito da classe Object
