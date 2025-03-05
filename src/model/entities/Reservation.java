@@ -4,15 +4,21 @@ import java.text.SimpleDateFormat; // Importa a classe SimpleDateFormat para for
 import java.util.Date; // Importa a classe Date para trabalhar com datas
 import java.util.concurrent.TimeUnit; // Importa a classe TimeUnit para converter unidades de tempo
 
-public class Reservation { // Define a classe Reservation
+import model.exceptions.MainException; // Importa a classe MainException
 
+public class Reservation { // Define a classe Reservation
     private Integer roomNumber; // Declara a variável de instância roomNumber para armazenar o número do quarto
     private Date checkin; // Declara a variável de instância checkin para armazenar a data de check-in
     private Date checkout; // Declara a variável de instância checkout para armazenar a data de check-out
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy"); // Cria um objeto SimpleDateFormat para formatar datas no formato "dd/MM/yyyy"
 
-    public Reservation(Integer roomNumber, Date checkin, Date checkout) { // Construtor da classe Reservation
+    
+    public Reservation(Integer roomNumber, Date checkin, Date checkout) throws MainException  {
+        if (!checkout.after(checkin)) {
+            //throw new IllegalArgumentException("Erro na reserva: A data de check-out deve ser posterior à data de check-in");
+            throw new MainException("Erro na reserva: A data de check-out deve ser posterior à data de check-in");
+        }
         this.roomNumber = roomNumber; // Inicializa a variável de instância roomNumber com o valor passado como argumento
         this.checkin = checkin; // Inicializa a variável de instância checkin com o valor passado como argumento
         this.checkout = checkout; // Inicializa a variável de instância checkout com o valor passado como argumento
@@ -39,18 +45,17 @@ public class Reservation { // Define a classe Reservation
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS); // Converte a diferença de milissegundos para dias e retorna o valor
     }
 
-    public String updateDates(Date checkin, Date checkout) {
+    public void updateDates(Date checkin, Date checkout)  { // Método para atualizar as datas de reserva
 
         Date now = new Date();
         if (checkin.before(now) || checkout.before(now)) {
-            System.out.println("Erro na reserva: As datas de reserva para atualização devem ser datas futuras");
+            throw new MainException(
+                "Erro na reserva: As datas de reserva para atualização devem ser datas futuras");
         }
-        if (!checkout.after(checkin)) {
-            System.out.println("Erro na reserva: A data de check-out deve ser posterior à data de check-in");
-        }
+
         this.checkin = checkin; // Define o valor da variável de instância checkin com o novo valor passado como argumento
         this.checkout = checkout;
-        return null;
+        //return null;
     }
 
     @Override // Indica que o método toString() está sendo sobrescrito da classe Object
